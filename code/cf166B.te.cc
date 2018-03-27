@@ -4,7 +4,6 @@
 #include <vector>
 #include <cmath>
 #include <cassert>
-#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -25,9 +24,6 @@ struct PT {
 double dot(PT p, PT q)     { return p.x*q.x+p.y*q.y; }
 double dist2(PT p, PT q)   { return dot(p-q,p-q); }
 double cross(PT p, PT q)   { return p.x*q.y-p.y*q.x; }
-double ccw(const PT &a, const PT &b, const PT & c) { return cross(b - a, c - a); }
-double skew(const PT& p) { return p.x == 0 ? ( p.y > 0 ? INF : -INF) : (p.y / p.x); }
-
 ostream &operator<<(ostream &os, const PT &p) {
   return os << "(" << p.x << "," << p.y << ")"; 
 }
@@ -38,7 +34,6 @@ PT RotateCW90(PT p)    { return PT(p.y,-p.x); }
 PT RotateCCW(PT p, double t) { 
   return PT(p.x*cos(t)-p.y*sin(t), p.x*sin(t)+p.y*cos(t)); 
 }
-
 
 // project point c onto line through a and b
 // assuming a != b
@@ -130,64 +125,12 @@ bool PointInPolygon(const vector<PT> &p, PT q) {
   return c;
 }
 
-bool PointInConvexPolygon(const vector<PT> &p, PT q) {
-  double direct = ccw(p[p.size() - 1], p[0], q);
-  for (int i = 0; i < p.size(); i++) {
-    int j = (i + 1) % p.size();
-    if (direct * ccw(p[i], p[j], q) < 0){
-      return false;
-    }
-  }
-
-  return true;
-}
-
 // determine if point is on the boundary of a polygon
 bool PointOnPolygon(const vector<PT> &p, PT q) {
   for (int i = 0; i < p.size(); i++)
     if (dist2(ProjectPointSegment(p[i], p[(i+1)%p.size()], q), q) < EPS)
       return true;
     return false;
-}
-
-
-vector<PT> ConvexHull(const vector<PT> & p, PT leftmost){
-  vector<PT> normalize;
-  for(int i = 0; i < p.size(); i++){
-    normalize.push_back(p[i] - leftmost);
-  }
-  // sort
-  sort(normalize.begin(), normalize.end(), [](const PT& a, const PT &b){
-      if(a.x == 0 && a.y == 0)return true;
-      if(b.x == 0 && b.y == 0)return false;
-      return skew(a) < skew(b);
-      });
-
-
-
-  stack<PT> S;
-  for(int i = 0; i < normalize.size(); i++){
-    while(S.size() > 2){
-      PT b = S.top(); S.pop();
-      PT a = S.top();
-      if (ccw(a, b, normalize[i]) < 0) {
-        continue;
-      }else{
-        S.push(b);
-        break;
-      }
-    }
-    S.push(normalize[i]);
-  }
-
-
-  vector<PT> hull;
-  while (!S.empty()) {
-    hull.push_back(S.top() + leftmost);
-    S.pop();
-  }
-
-  return hull;
 }
 
 // compute intersection of line through points a and b with
@@ -263,44 +206,26 @@ bool IsSimple(const vector<PT> &p) {
   return true;
 }
 
-
 int main() {
   int n, m;
   scanf("%d", &n);
 
-  int x, y;
-  //long long x, y;
-  vector<PT> A, B;
+  long long x, y;
+  vector<PT> polygon;
   for(int i = 0; i < n; i++){
-    //scanf("%I64d%I64d", &x, &y);
-    scanf("%d%d", &x, &y);
-    A.push_back(PT(x, y));
+    scanf("%I64d%I64d", &x, &y);
+    polygon.push_back(PT(x, y));
   }
 
   scanf("%d", &m);
-  
-  PT leftmost(INF, INF);
-
   for(int i = 0; i < m; i++){
-    scanf("%d%d", &x, &y);
-    //scanf("%I64d%I64d", &x, &y);
-    B.push_back(PT(x, y));
-    if(x < leftmost.x){
-      leftmost = PT(x, y);
-    }
-  }
-
-  // Convex Hull first before check.
-  vector<PT> convex_hull = ConvexHull(B, leftmost);
-
-  for (int i = 0; i < convex_hull.size(); i++){
-    if(!PointOnPolygon(A, convex_hull[i]) && PointInPolygon(A, convex_hull[i])){
+    scanf("%I64d%I64d", &x, &y);
+    if(!PointOnPolygon(polygon, PT(x, y)) && PointInPolygon(polygon, PT(x, y))){
       continue;
     }
     cout<<"NO"<<endl;
     return 0;
   }
-  
 
   cout<<"YES"<<endl;
   return 0;
