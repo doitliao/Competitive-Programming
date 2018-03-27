@@ -208,17 +208,18 @@ bool IsSimple(const vector<PT> &p) {
 
 int main() {
   int n, m;
-  cin>>n;
+  scanf("%d", &n);
 
-  double x, y;
+  long long x, y;
   vector<PT> polygon;
   for(int i = 0; i < n; i++){
-    cin>>x>>y;
+    scanf("%lld%lld", &x, &y);
     polygon.push_back(PT(x, y));
   }
-  cin>>m;
+
+  scanf("%d", &m);
   for(int i = 0; i < m; i++){
-    cin>>x>>y;
+    scanf("%lld%lld", &x, &y);
     if(!PointOnPolygon(polygon, PT(x, y)) && PointInPolygon(polygon, PT(x, y))){
       continue;
     }
