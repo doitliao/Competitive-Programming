@@ -213,13 +213,13 @@ int main() {
   long long x, y;
   vector<PT> polygon;
   for(int i = 0; i < n; i++){
-    scanf("%lld%lld", &x, &y);
+    scanf("%I64d%I64d", &x, &y);
     polygon.push_back(PT(x, y));
   }
 
   scanf("%d", &m);
   for(int i = 0; i < m; i++){
-    scanf("%lld%lld", &x, &y);
+    scanf("%I64d%I64d", &x, &y);
     if(!PointOnPolygon(polygon, PT(x, y)) && PointInPolygon(polygon, PT(x, y))){
       continue;
     }
