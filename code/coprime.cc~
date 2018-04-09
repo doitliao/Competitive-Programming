@@ -1,0 +1,35 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+class Factor{
+  public:
+    Factor(unsigned n):N(n), p(n), d(n){
+      for(int i = 2; i < n; i++){
+          if (!p[i]) {
+            for (int x = i; x < n; x += i) {
+              d[x].push_back(i);
+              p[x] = true;
+            }
+          }
+      }
+    }
+   
+    vector<unsigned> get(int x){
+      return d[x];
+    } 
+    const unsigned N;
+    vector<bool> p; // is not prime number.
+    vector<vector<unsigned> > d;
+};
+
+class Coprime {
+
+};
+
+int main() {
+  Factor ft(200005);
+  for(int x:ft.get(30030)){
+    cout<<x<<endl;
+  }
+}
